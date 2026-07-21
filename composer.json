@@ -8,9 +8,12 @@
         "aws"
     ],
     "require": {
+        "php": "^8.5",
         "aws/aws-sdk-php": "^3.171",
+        "psr/log": "^3",
         "symfony/console": "^6.4.0",
-        "symfony/event-dispatcher": "^6.4.0"
+        "symfony/event-dispatcher": "^6.4.0",
+        "symfony/http-client-contracts": "^3.4"
     },
     "require-dev": {
         "codraw/core": "^0.39",
@@ -18,14 +21,14 @@
         "codraw/tester": "^0.39",
         "phpunit/phpunit": "^11.3 || ^12.0",
         "symfony/cache": "^6.4.0",
-        "symfony/http-client": "^6.4.0",
-        "symfony/http-client-contracts": "^3.4"
+        "symfony/http-client": "^6.4.0"
     },
     "conflict": {
         "guzzlehttp/guzzle": "<6"
     },
     "suggest": {
-        "aws/aws-sdk-php-symfony": "To configure aws-sdk-php into symfony"
+        "aws/aws-sdk-php-symfony": "To configure aws-sdk-php into symfony",
+        "symfony/http-client": "To provide a HttpClientInterface implementation for the IMDS clients"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

@@ -36,38 +36,54 @@ class CloudWatchLogsDownloadCommand extends Command
             throw new \RuntimeException(\sprintf('Service [%s] is required for command [%s] to run.', CloudWatchLogsClient::class, static::class));
         }
 
-        $startTime = strtotime($input->getOption('startTime')) * 1000;
-        $endTime = strtotime($input->getOption('endTime')) * 1000;
+        $startTime = strtotime($input->getOption('startTime'));
+
+        if (false === $startTime) {
+            throw new \InvalidArgumentException(\sprintf('Option [startTime] with value [%s] is not a valid date.', $input->getOption('startTime')));
+        }
+
+        $endTime = strtotime($input->getOption('endTime'));
+
+        if (false === $endTime) {
+            throw new \InvalidArgumentException(\sprintf('Option [endTime] with value [%s] is not a valid date.', $input->getOption('endTime')));
+        }
 
         $arguments = [
             'startFromHead' => true,
             'logGroupName' => $input->getArgument('logGroupName'),
             'logStreamName' => $input->getArgument('logStreamName'),
-            'startTime' => $startTime,
-            'endTime' => $endTime,
+            'startTime' => $startTime * 1000,
+            'endTime' => $endTime * 1000,
         ];
 
         $handle = fopen($input->getArgument('output'), $input->getOption('fileMode'));
-        $nextForwardToken = null;
-        do {
-            $nextToken = $nextForwardToken;
-            if ($nextToken) {
-                $arguments['nextToken'] = $nextToken;
-            }
 
-            $events = $this
-                ->cloudWatchClient
-                ->getLogEvents($arguments)
-            ;
+        if (false === $handle) {
+            throw new \RuntimeException(\sprintf('Cannot open file [%s] with mode [%s].', $input->getArgument('output'), $input->getOption('fileMode')));
+        }
 
-            foreach ($events['events'] as $event) {
-                fwrite($handle, $event['message'].\PHP_EOL);
-            }
+        try {
+            $nextForwardToken = null;
+            do {
+                $nextToken = $nextForwardToken;
+                if ($nextToken) {
+                    $arguments['nextToken'] = $nextToken;
+                }
 
-            $nextForwardToken = $events['nextForwardToken'];
-        } while ($nextForwardToken !== $nextToken);
+                $events = $this
+                    ->cloudWatchClient
+                    ->getLogEvents($arguments)
+                ;
 
-        fclose($handle);
+                foreach ($events['events'] as $event) {
+                    fwrite($handle, $event['message'].\PHP_EOL);
+                }
+
+                $nextForwardToken = $events['nextForwardToken'];
+            } while ($nextForwardToken !== $nextToken);
+        } finally {
+            fclose($handle);
+        }
 
         return 0;
     }
