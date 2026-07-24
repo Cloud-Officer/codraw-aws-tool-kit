@@ -42,7 +42,7 @@ class NewestInstanceRoleListenerCheckTest extends TestCase
         );
 
         $imdsClient
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('getCurrentInstanceId')
         ;
 
@@ -65,7 +65,7 @@ class NewestInstanceRoleListenerCheckTest extends TestCase
         );
 
         $imdsClient
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('getCurrentInstanceId')
         ;
 
@@ -88,7 +88,7 @@ class NewestInstanceRoleListenerCheckTest extends TestCase
         );
 
         $imdsClient
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('getCurrentInstanceId')
             ->with()
             ->willThrowException(new \Exception())
@@ -113,7 +113,7 @@ class NewestInstanceRoleListenerCheckTest extends TestCase
         );
 
         $imdsClient
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('getCurrentInstanceId')
             ->with()
             ->willReturn(null)
@@ -138,17 +138,17 @@ class NewestInstanceRoleListenerCheckTest extends TestCase
         );
 
         $imdsClient
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('getCurrentInstanceId')
             ->with()
             ->willReturn(uniqid('instance-id-'))
         ;
 
-        $ec2Client->expects(static::once())
+        $ec2Client->expects($this->once())
             ->method('__call')
             ->with(
                 'describeInstances',
-                self::provideDescribeInstancesArgs(
+                static::provideDescribeInstancesArgs(
                     $role = uniqid('role-')
                 )
             )
@@ -180,17 +180,17 @@ class NewestInstanceRoleListenerCheckTest extends TestCase
         );
 
         $imdsClient
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('getCurrentInstanceId')
             ->with()
             ->willReturn($instanceId = uniqid('instance-id-'))
         ;
 
-        $ec2Client->expects(static::once())
+        $ec2Client->expects($this->once())
             ->method('__call')
             ->with(
                 'describeInstances',
-                self::provideDescribeInstancesArgs(
+                static::provideDescribeInstancesArgs(
                     $role = uniqid('role-')
                 )
             )
@@ -231,17 +231,17 @@ class NewestInstanceRoleListenerCheckTest extends TestCase
         );
 
         $imdsClient
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('getCurrentInstanceId')
             ->with()
             ->willReturn(uniqid('instance-id-'))
         ;
 
-        $ec2Client->expects(static::once())
+        $ec2Client->expects($this->once())
             ->method('__call')
             ->with(
                 'describeInstances',
-                self::provideDescribeInstancesArgs(
+                static::provideDescribeInstancesArgs(
                     $role = uniqid('role-')
                 )
             )
@@ -267,17 +267,17 @@ class NewestInstanceRoleListenerCheckTest extends TestCase
         );
 
         $imdsClient
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('getCurrentInstanceId')
             ->with()
             ->willReturn($instanceId = uniqid('instance-id-'))
         ;
 
-        $ec2Client->expects(static::once())
+        $ec2Client->expects($this->once())
             ->method('__call')
             ->with(
                 'describeInstances',
-                self::provideDescribeInstancesArgs(
+                static::provideDescribeInstancesArgs(
                     $role = uniqid('role-')
                 )
             )
@@ -317,20 +317,20 @@ class NewestInstanceRoleListenerCheckTest extends TestCase
     ): InputInterface {
         $input = $this->createMock(InputInterface::class);
 
-        $input->expects(static::once())
+        $input->expects($this->once())
             ->method('hasOption')
             ->with($service::OPTION_AWS_NEWEST_INSTANCE_ROLE)
             ->willReturn($hasOption)
         ;
 
         if ($hasOption) {
-            $input->expects(static::once())
+            $input->expects($this->once())
                 ->method('getOption')
                 ->with($service::OPTION_AWS_NEWEST_INSTANCE_ROLE)
                 ->willReturn($optionValue)
             ;
         } else {
-            $input->expects(static::never())
+            $input->expects($this->never())
                 ->method('getOption')
                 ->with($service::OPTION_AWS_NEWEST_INSTANCE_ROLE)
             ;
@@ -339,7 +339,7 @@ class NewestInstanceRoleListenerCheckTest extends TestCase
         return $input;
     }
 
-    private static function provideDescribeInstancesArgs(string $role): array
+    protected static function provideDescribeInstancesArgs(string $role): array
     {
         return [
             [
