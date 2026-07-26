@@ -40,6 +40,6 @@
         }
     },
     "replace": {
-        "codraw/aws-tool-kit": "self.version"
+        "draw/aws-tool-kit": "self.version"
     }
 }
